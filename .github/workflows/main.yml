@@ -1,29 +1,34 @@
-name: My GitHub Actions Workflow
+name: Auto and Manual Workflow
 
 on:
   push:
     paths:
-      - 'app/**'  # Replace 'special-directory' with your directory's name
-  workflow_dispatch:  # This allows manual triggering
+      - 'app/**'
 
 jobs:
-  on_push:
+  auto_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: test
-        run: echo "hello"  
+      
+      - name: Auto job
+        run: |
+          # Add your automatic workflow steps here
 
-      # Add more steps here for your first job
-
-  on_manual_trigger:
-    if: github.event_name == 'workflow_dispatch'
+  manual_job:
     runs-on: ubuntu-latest
+    needs: [auto_job]
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: test
-        run: echo "Test"
+      - name: Request Manual Approval
+        id: approval
+        uses: wei/cross-repo-actions/manual-approval@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          comments: Approve to continue
+          actions: [approve]
 
-      # Add more steps here for your second job
+      - name: Manual job
+        if: steps.approval.outputs.approved == 'true'
+        run: |
+          echo "hello"
