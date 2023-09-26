@@ -1,0 +1,30 @@
+name: My GitHub Actions Workflow
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  on_push_dev_directory:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'app/')
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: check
+        run: echo "hello"
+        
+      # Add more steps here for your first job specific to 'dev/' directory
+
+  on_push_stage_directory:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'project/environments/dev')
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: check
+        run: echo "bye"
+
+      # Add more steps here for your second job specific to 'stage/' directory
+
