@@ -2,29 +2,28 @@ name: My GitHub Actions Workflow
 
 on:
   push:
-    branches:
-      - main  # Change this to your main branch name
+    paths:
+      - 'app/**'  # Replace 'special-directory' with your directory's name
+  workflow_dispatch:  # This allows manual triggering
 
 jobs:
-  on_push_dev_directory:
+  on_push:
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.modified, 'app/')
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: check
-        run: echo "hello"
-        
-      # Add more steps here for your first job specific to 'dev/' directory
+      - name: test
+        run: echo "hello"  
 
-  on_push_stage_directory:
+      # Add more steps here for your first job
+
+  on_manual_trigger:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.modified, 'project/environments/dev')
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: check
-        run: echo "bye"
+      - name: test
+        run: echo "Test"
 
-      # Add more steps here for your second job specific to 'stage/' directory
-
+      # Add more steps here for your second job
