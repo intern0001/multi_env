@@ -1,9 +1,6 @@
 name: "App stage"
 
 on:
-  push:
-    paths:
-      - 'app/**'
   workflow_dispatch: {}  
 jobs:
   my_deploy:
