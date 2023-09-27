@@ -36,7 +36,7 @@ jobs:
         uses: autero1/action-terragrunt@v1.1.0
         with:
           terragrunt_version: 0.51.1
-          terragrunt_wrapper: false
+          terragrunt_wrapper: true
       - name: Terraform Plan - https://www.terraform.io/docs/commands/plan.html
         id: plan
         run: |
