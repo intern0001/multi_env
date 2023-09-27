@@ -42,7 +42,7 @@ jobs:
         continue-on-error: true
 
       - name: Check for Plan Failure
-        if: steps.plan.outputs.exitcode == 2
+        if: steps.plan.outputs.exitcode == 0
         run: exit 1
         
       - name: Terragrunt Init
