@@ -33,7 +33,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Setup Terragrunt
-        uses: autero1/action-terragrunt@v1.1.0
+        uses: gruntwork-io/terragrunt-action@v1
         with:
           terragrunt_version: 0.51.1
 
