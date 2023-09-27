@@ -38,19 +38,18 @@ jobs:
           terragrunt_version: 0.51.1
 
       - name: Terragrunt Staging Plan
-        run: terragrunt run-all show -no-color -json staging.plan
+        run: terragrunt run-all show -no-color -json staging.plan >> staging_plan.json
 
       - name: Filter Zero Change Resources
         run: |
-          jq -c '.resource_changes[] | select(.change.actions != ["no-op"])' staging.plan > filtered_staging_plan.json
+         jq -c '.resource_changes[] | select(.change.actions != ["no-op"])' staging_plan.json > filtered_staging_plan.json
 
-      - name: Terragrunt Apply Non-Zero Change Resources
-        run: terragrunt run-all apply filtered_staging_plan.json
 
-      - name: Filter Zero Change Resources from Apply Output
+      - name: Terragrunt Apply
         run: |
-          terragrunt run-all apply filtered_staging_plan.json | \
-          grep -v "Plan: 0 to add, 0 to change, 0 to destroy"
+         terragrunt run-all apply filtered_staging_plan.json | \
+         grep -v "Plan: 0 to add, 0 to change, 0 to destroy"
+
 
 
      
