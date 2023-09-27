@@ -39,8 +39,15 @@ jobs:
       - name: Terraform Plan - https://www.terraform.io/docs/commands/plan.html
         id: plan
         run: terragrunt run-all plan -detailed-exitcode -input=false -out=plan.out
-        continue-on-error: true
+  
 
+      - run: echo ${{ steps.plan.outputs.stdout }}
+      - run: echo ${{ steps.plan.outputs.stderr }}
+      - run: echo ${{ steps.plan.outputs.exitcode }}
+
+
+
+     
       - name: Check for Plan Failure
         run: echo ${{ steps.plan.outputs.exitcode }}
               
