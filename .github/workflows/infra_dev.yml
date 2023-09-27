@@ -1,3 +1,4 @@
+name: "Infrastructure dev"
 on:
   push:
     paths:
