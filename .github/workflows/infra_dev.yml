@@ -32,24 +32,26 @@ jobs:
           terraform_version: 1.5.7
           terraform_wrapper: false
 
-      - name: Setup Terragrunt
-        uses: gruntwork-io/terragrunt-action@v1
-        with:
-          terragrunt_version: 0.51.1
+      - name: Install Terragrunt
+        run: |
+          wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.34.1/terragrunt_linux_amd64
+          chmod +x terragrunt_linux_amd64
+          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
 
       - name: Terragrunt Staging Plan
+        run: terragrunt run-all show -no-color -json staging.plan
+
+      - name: Filter Zero Change Resources
         run: |
-          terragrunt run-all show -no-color -json staging.plan
-          PLAN_HAS_CHANGES=$(jq -r '.resource_changes[] | select(.change.actions != ["no-op"])' staging.plan)
-          if [ -n "$PLAN_HAS_CHANGES" ]; then
-            echo "Changes detected in the plan. Proceeding with apply."
-          else
-            echo "No changes detected in the plan. Skipping apply."
-            exit 0  # Skip the apply step
-          fi
+          jq -c '.resource_changes[] | select(.change.actions != ["no-op"])' staging.plan > filtered_staging_plan.json
 
       - name: Terragrunt Apply Non-Zero Change Resources
         run: terragrunt run-all apply filtered_staging_plan.json
+
+      - name: Filter Zero Change Resources from Apply Output
+        run: |
+          terragrunt run-all apply filtered_staging_plan.json | \
+          grep -v "Plan: 0 to add, 0 to change, 0 to destroy"
 
 
 
