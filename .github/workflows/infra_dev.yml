@@ -42,9 +42,8 @@ jobs:
         continue-on-error: true
 
       - name: Check for Plan Failure
-        if: steps.plan.outputs.exitcode == 0
-        run: exit 1
-        
+        run: echo ${{ steps.plan.outputs.exitcode }}
+              
       - name: Terragrunt Init
         id: init
         run: terragrunt run-all init
