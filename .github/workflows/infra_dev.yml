@@ -38,17 +38,18 @@ jobs:
           terragrunt_version: 0.51.1
 
       - name: Terragrunt Staging Plan
-        run: terragrunt run-all show -no-color -json staging.plan >> staging_plan.json
-
-      - name: Filter Zero Change Resources
         run: |
-         jq -c '.resource_changes[] | select(.change.actions != ["no-op"])' staging_plan.json > filtered_staging_plan.json
+          terragrunt run-all show -no-color -json staging.plan
+          PLAN_HAS_CHANGES=$(jq -r '.resource_changes[] | select(.change.actions != ["no-op"])' staging.plan)
+          if [ -n "$PLAN_HAS_CHANGES" ]; then
+            echo "Changes detected in the plan. Proceeding with apply."
+          else
+            echo "No changes detected in the plan. Skipping apply."
+            exit 0  # Skip the apply step
+          fi
 
-
-      - name: Terragrunt Apply
-        run: |
-         terragrunt run-all apply filtered_staging_plan.json | \
-         grep -v "Plan: 0 to add, 0 to change, 0 to destroy"
+      - name: Terragrunt Apply Non-Zero Change Resources
+        run: terragrunt run-all apply filtered_staging_plan.json
 
 
 
