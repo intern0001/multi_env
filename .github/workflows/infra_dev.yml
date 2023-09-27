@@ -30,16 +30,21 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.7
-          terraform_wrapper: true
+          terraform_wrapper: false
 
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v1.1.0
         with:
           terragrunt_version: 0.51.1
+          terragrunt_wrapper: false
       - name: Terraform Plan - https://www.terraform.io/docs/commands/plan.html
         id: plan
-        run: terragrunt run-all plan -detailed-exitcode -input=false -out=plan.out
-  
+        run: |
+         terragrunt run-all plan
+         echo ${{ steps.plan.outputs.stdout }}
+         echo ${{ steps.plan.outputs.stderr }}
+         echo ${{ steps.plan.outputs.exitcode }}
+
       - name: Test 1    
         run: echo ${{ steps.plan.outputs.stdout }}
       - name: Test 2 
