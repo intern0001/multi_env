@@ -36,6 +36,15 @@ jobs:
         uses: autero1/action-terragrunt@v1.1.0
         with:
           terragrunt_version: 0.51.1
+      - name: Terraform Plan - https://www.terraform.io/docs/commands/plan.html
+        id: plan
+        run: terragrunt run-all plan -detailed-exitcode -input=false -out=plan.out
+        continue-on-error: true
+
+      - name: Check for Plan Failure
+        if: steps.plan.outputs.exitcode == 1
+        run: exit 1
+        
       - name: Terragrunt Init
         id: init
         run: terragrunt run-all init
