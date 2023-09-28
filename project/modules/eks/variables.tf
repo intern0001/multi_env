@@ -8,7 +8,7 @@ variable "private_subnets" {
 variable "min_size" {
     description = "Minimum size of the worker node."
     type = number
-    default = 2
+    default = 1
 }
 variable "max_size" {
     description = "Maximum size of the worker node."
