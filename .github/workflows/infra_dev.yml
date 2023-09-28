@@ -39,29 +39,18 @@ jobs:
           sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
 
       - name: Terragrunt Staging Plan
-        run: terragrunt run-all show -no-color -json staging.plan
+        run: terragrunt run-all plan > test.txt
 
-      - name: Filter Zero Change Resources
+      - name: Check updates
         run: |
-          jq -c '.resource_changes[] | select(.change.actions != ["no-op"])' staging.plan > filtered_staging_plan.json
-
-      - name: Terragrunt Apply Non-Zero Change Resources
-        run: terragrunt run-all apply filtered_staging_plan.json
-
-      - name: Filter Zero Change Resources from Apply Output
-        run: |
-          terragrunt run-all apply filtered_staging_plan.json | \
-          grep -v "Plan: 0 to add, 0 to change, 0 to destroy"
-
-
-
-     
-    #  - name: Check for Plan Failure
-    #    run: echo ${{ steps.plan.outputs.exitcode }}
+          if grep -q 'Plan' test.txt; then
+            echo "No changes. Your infrastructure matches the configuration."
+            exit 0 # Exit with success
+          fi
               
-    #  - name: Terragrunt Init
-    #    id: init
-    #    run: terragrunt run-all init
-    #  - name: Terragrunt Apply
-    #    id: apply
-    #    run: terragrunt run-all apply --terragrunt-non-interactive  
+      - name: Terragrunt Init
+        id: init
+        run: terragrunt run-all init
+      - name: Terragrunt Apply
+        id: apply
+        run: terragrunt run-all apply --terragrunt-non-interactive  
