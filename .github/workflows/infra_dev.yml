@@ -55,15 +55,19 @@ jobs:
       - name: Terragrunt Init
         id: init
         run: |
-          if [ ${{ steps.check-updates.outputs.plan-found }} == "true" ]; then
+          if [[ "${{ steps.check-updates.outputs.plan-found }}" == "true" ]]; then
+            echo "Exiting the workflow because 'Plan' was found."
             exit 0 # Exit with success if 'Plan' is found
+          else
+            terragrunt run-all init
           fi
-          terragrunt run-all init
           
       - name: Terragrunt Apply
         id: apply
         run: |
-          if [ ${{ steps.check-updates.outputs.plan-found }} == "true" ]; then
+          if [[ "${{ steps.check-updates.outputs.plan-found }}" == "true" ]]; then
+            echo "Exiting the workflow because 'Plan' was found."
             exit 0 # Exit with success if 'Plan' is found
+          else
+            terragrunt run-all apply --terragrunt-non-interactive
           fi
-          terragrunt run-all apply --terragrunt-non-interactive
