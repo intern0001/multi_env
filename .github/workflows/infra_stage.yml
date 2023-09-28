@@ -24,20 +24,28 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-
+    
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.7
           terraform_wrapper: false
+      - name: Install Terragrunt
+        run: |
+          wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.51.1/terragrunt_linux_amd64
+          chmod +x terragrunt_linux_amd64
+          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+      - name: Terragrunt Staging Plan
+        run: terragrunt run-all plan > test.txt
 
-      - name: Setup Terragrunt
-        uses: autero1/action-terragrunt@v1.1.0
-        with:
-          terragrunt_version: 0.51.1
-      - name: Terragrunt Init
-        id: init
-        run: terragrunt run-all init
-      - name: Terragrunt Apply
-        id: apply
-        run: terragrunt run-all apply --terragrunt-non-interactive  
+      - name: Check updates
+        run: |
+          if grep -q 'Plan' test.txt; then
+            echo "There are some changes in the infrastructure"             
+            terragrunt run-all apply --terragrunt-non-interactive  
+            exit 0 # Exit with success  
+           
+          else
+            echo "No changes. Your infrastructure matches the configuration."
+          fi  
+          
