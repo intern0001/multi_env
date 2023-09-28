@@ -25,7 +25,7 @@ module "eks" {
    
   # Enable IAM Roles for Service Accounts (IRSA)
 
-   enable_irsa = false
+   enable_irsa = true
    
    # Managed Node Groups configuration
    
