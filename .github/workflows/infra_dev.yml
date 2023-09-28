@@ -40,12 +40,12 @@ jobs:
           if grep -q 'Plan' test.txt; then
             echo "Test"
             exit 0 # Exit with success               
-          - name: Terragrunt Init
-            id: init
-            run: terragrunt run-all init
-          - name: Terragrunt Apply
-            id: apply
-           run: terragrunt run-all apply --terragrunt-non-interactive  
+           - name: Terragrunt Init
+             id: init
+             run: terragrunt run-all init
+           - name: Terragrunt Apply
+             id: apply
+             run: terragrunt run-all apply --terragrunt-non-interactive  
            
           else
             echo "No changes. Your infrastructure matches the configuration."
