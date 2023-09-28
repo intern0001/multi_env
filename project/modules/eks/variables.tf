@@ -1,7 +1,9 @@
 variable "vpc_id" {
+  default = ""
 }
 variable "private_subnets" {
   type = list(string) 
+  default = ""
 }
 variable "min_size" {
     description = "Minimum size of the worker node."
