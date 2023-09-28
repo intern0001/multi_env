@@ -44,9 +44,13 @@ jobs:
       - name: Check updates
         run: |
           if grep -q 'Plan' test.txt; then
-            echo "No changes. Your infrastructure matches the configuration."
+            echo "Test"
             exit 0 # Exit with success
-          fi
+          else
+            echo "No changes. Your infrastructure matches the configuration."
+            exit 1 
+          fi  
+          
               
       - name: Terragrunt Init
         id: init
