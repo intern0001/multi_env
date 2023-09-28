@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'project/environments/dev/**'
+      - 'project/modules/**'
 jobs:
   terragrunt:
     name: Terragrunt
