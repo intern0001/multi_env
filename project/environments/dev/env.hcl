@@ -3,5 +3,3 @@
 locals {
   env = "dev"
 }
-
-
